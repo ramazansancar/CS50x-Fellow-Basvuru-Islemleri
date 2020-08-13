@@ -94,10 +94,10 @@ function MailGonder($alici,$alici_isim,$mail_baslik,$mail_icerik,$sunucu = SMTP_
 	$mail->MsgHTML($content);
 	if($mail->Send()) {
 		// e-posta başarılı ile gönderildi
-		$sonuc = "Mesaj Başarıyla Gönderildi.";
+		$sonuc = "katılımcısına mail başarıyla gönderildi.";
 	} else {
 		// bir sorun var, sorunu ekrana bastıralım
-		$sonuc = "Gönderim Hatası: " . $mail->ErrorInfo;
+		$sonuc = '<font style="color:red">Mail Gönderilemedi. Gönderim Hatası: <b>' . $mail->ErrorInfo.'</b></font>';
 	}
 	return $sonuc;
 }
@@ -275,13 +275,18 @@ $katilimci_sayisi = $db->from("katilimcilar")->select('count(uye_id) as total')-
 			$icerik = DegistirmeFonksiyonu( $sabit_degistir, $icerik);
 			$icerik = DegistirmeFonksiyonu( $degistir, $icerik);
 
-			$YollaGitsin = MailGonder($uye_mail,$uye_adsoyad,$mail_basligi,$icerik);
+			$YollaGitsin = "(";
+			$YollaGitsin .= $uye_adsoyad.") ";
+			$YollaGitsin .= MailGonder($uye_mail,$uye_adsoyad,$mail_basligi,$icerik);
+			$YollaGitsin .= "</br>";
+			print $YollaGitsin;
 
+			/*
 			if($YollaGitsin){
 				echo $uye_adsoyad." katılımcısına mail gönderildi.</br>";
 			}else{
 				echo $uye_adsoyad." Mail Gönderilemedi.</br>";
-			}
+			}*/
 		}
 		echo "<b>Toplam ".$katilimci_sayisi." katılımcıya mail gönderildi.<b>";
 	}else{
